@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNTD Values | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #00f2ff;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --cosmic: #00f2ff;
+            --nightmare: #bd00ff;
+            --secret: #ff007a;
+            --present: #ffd700; /* Золотой для Present */
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(189, 0, 255, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        .main-nav {
+            position: fixed;
+            top: 0; width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            background: rgba(11, 14, 20, 0.8);
+        }
+
+        .nav-container {
+            width: 100%; max-width: 1200px;
+            margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; text-decoration: none; color: #fff; }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+        
+        .dropdown { position: relative; }
+        .dropdown-trigger {
+            text-decoration: none; color: var(--text-dim);
+            font-weight: 600; font-size: 0.9rem;
+            transition: 0.3s; cursor: pointer;
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 0;
+            background: #151921; border: 1px solid var(--border);
+            border-radius: 12px; padding: 8px; min-width: 160px;
+            display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .dropdown:hover .dropdown-menu { display: block; animation: fadeIn 0.2s ease-out; }
+        .dropdown-menu a {
+            display: block; padding: 10px 16px; color: var(--text-dim);
+            text-decoration: none; font-size: 0.85rem; font-weight: 600;
+            border-radius: 8px; transition: 0.2s;
+        }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HERO --- */
+        .hero { text-align: center; width: 100%; max-width: 1200px; padding: 100px 20px 40px; }
+        .hero h2 { font-size: 1.1rem; color: var(--accent); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 10px; font-weight: 700; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -1.5px; margin: 0 0 40px 0; background: linear-gradient(180deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- CARDS GRID --- */
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 колонки */
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .currency-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px 15px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .currency-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Контейнер для фото */
+        .icon-wrap {
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .unit-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+        }
+
+        /* Свечение фото при наведении */
+        .card-cosmic:hover .unit-img { filter: drop-shadow(0 0 15px var(--cosmic)); }
+        .card-nightmare:hover .unit-img { filter: drop-shadow(0 0 15px var(--nightmare)); }
+        .card-secret:hover .unit-img { filter: drop-shadow(0 0 15px var(--secret)); }
+        .card-present:hover .unit-img { filter: drop-shadow(0 0 15px var(--present)); }
+
+        .cur-action { font-weight: 800; font-size: 1.1rem; color: #fff; }
+        .cur-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+
+        
+        .card-cosmic:hover { box-shadow: 0 0 30px rgba(0, 242, 255, 0.1); }
+        .card-nightmare:hover { box-shadow: 0 0 30px rgba(189, 0, 255, 0.1); }
+        .card-secret:hover { box-shadow: 0 0 30px rgba(255, 0, 122, 0.1); }
+        .card-present:hover { box-shadow: 0 0 30px rgba(255, 215, 0, 0.1); }
+
+        .footer-minimal { padding: 40px 0; color: #475569; font-size: 0.8rem; font-weight: 600; text-align: center; }
+
+        @media (max-width: 1100px) { .currency-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { 
+            .currency-grid { grid-template-columns: 1fr; } 
+            body { overflow-y: auto; height: auto; }
+            .hero { padding-top: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">FNTD<span>VALUES</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html" style="text-decoration: none; color: var(--text-dim); font-weight: 600; font-size: 0.9rem;">Market</a></li>
+                <li class="dropdown">
+                    <div class="dropdown-trigger">Value List ▼</div>
+                    <div class="dropdown-menu">
+                        <a href="Cosmic.html">Cosmic</a>
+                        <a href="Nightmare.html">Nightmare</a>
+                        <a href="Secret.html">Secret</a>
+                    </div>
+                </li>
+                <li><a href="ValueCalculator.html" style="text-decoration: none; color: var(--text-dim); font-weight: 600; font-size: 0.9rem;">Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h2>Unofficial Remastered</h2>
+        <h1>FNTD Remaster Value List</h1>
+
+        <div class="currency-grid">
+            <a href="Cosmic.html" class="currency-card card-cosmic">
+                <div class="icon-wrap">
+                    <img src="https://i.ibb.co.com/fzPb3kcz/Untitled-17.png" alt="Cosmic" class="unit-img">
+                </div>
+                <span class="cur-name">Unit Rarity</span>
+                <span class="cur-action" style="color: var(--cosmic);">Cosmic</span>
+            </a>
+
+            <a href="Nightmare.html" class="currency-card card-nightmare">
+                <div class="icon-wrap">
+                    <img src="https://i.ibb.co.com/k62gBwrV/Shadow-Bonnie.webp" alt="Nightmare" class="unit-img">
+                </div>
+                <span class="cur-name">Unit Rarity</span>
+                <span class="cur-action" style="color: var(--nightmare);">Nightmare</span>
+            </a>
+
+            <a href="Secret.html" class="currency-card card-secret">
+                <div class="icon-wrap">
+                    <img src="https://i.ibb.co.com/Zp11WDNs/Tarnished-Spring-Bonnie.webp" alt="Secret" class="unit-img">
+                </div>
+                <span class="cur-name">Unit Rarity</span>
+                <span class="cur-action" style="color: var(--secret);">Secret</span>
+            </a>
+
+            <a href="Present.html" class="currency-card card-present">
+                <div class="icon-wrap">
+                    <img src="https://i.ibb.co.com/JwhbNtcp/Abyssal-Present.webp" alt="Present" class="unit-img">
+                </div>
+                <span class="cur-name"></span>
+                <span class="cur-action" style="color: var(--present);">Present</span>
+            </a>
+        </div>
+
+        <div class="footer-minimal">
+            &copy; 2026 FNTD REMASTERED // TRADING INTERFACE
+        </div>
+    </section>
+
+</body>
+</html>
