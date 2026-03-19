@@ -1,0 +1,371 @@
+Понял, исправляю только структуру и закрываю все теги, не меняя твою логику и стили.
+
+В твоем коде была оборвана навигация в конце и не хватало закрывающих тегов для <body> и <html>, а также отсутствовала JavaScript-часть, из-за которой кнопки не нажимались.
+
+HTML
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNTD Values | Trade Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #00f2ff;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --cosmic: #00f2ff;
+            --nightmare: #bd00ff;
+            --secret: #ff007a;
+            --win: #00ff88;
+            --loss: #ff4757;
+            --oc-color: #ffd700;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(189, 0, 255, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0; min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION --- */
+        .main-nav {
+            position: fixed; top: 0; width: 100%; height: 80px;
+            display: flex; align-items: center; z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px); background: rgba(11, 14, 20, 0.85);
+        }
+        .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
+        .logo { font-weight: 800; font-size: 1.4rem; text-decoration: none; color: #fff; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; list-style: none; gap: 32px; margin: 0; padding: 0; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: #fff; }
+
+        .dropdown { position: relative; padding: 10px 0; }
+        .dropdown-trigger { color: var(--text-dim); font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+            background: #151921; border: 1px solid var(--border); border-radius: 16px; padding: 8px; min-width: 180px;
+            opacity: 0; visibility: hidden; transition: 0.3s; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 12px 16px; color: var(--text-dim); border-radius: 10px; text-align: left; }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
+
+        /* --- CALCULATOR --- */
+        .calc-wrapper { max-width: 1100px; margin: 120px auto 40px; padding: 0 20px; }
+        .status-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 30px; text-align: center; margin-bottom: 30px; }
+        #trade-status { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; }
+
+        .trade-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .trade-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; min-height: 450px; }
+        .trade-box h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); text-align: center; margin-bottom: 20px; }
+
+        .unit-slots { flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+        .added-unit { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 16px; border: 1px solid var(--border); }
+        .added-unit img { width: 45px; height: 45px; object-fit: contain; }
+        .added-unit .info { flex-grow: 1; }
+        .added-unit .name { font-weight: 700; font-size: 0.85rem; display: block; }
+        .added-unit .price { font-size: 0.85rem; color: var(--accent); font-weight: 800; }
+        
+        .remove-btn { color: var(--loss); cursor: pointer; font-weight: 800; font-size: 1.2rem; padding: 0 10px; transition: 0.2s; }
+        .remove-btn:hover { transform: scale(1.2); }
+
+        .total-row { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .total-row span { font-weight: 800; font-size: 1.6rem; color: var(--accent); }
+
+        .add-trigger { background: rgba(255,255,255,0.05); border: 1px dashed var(--border); color: #fff; padding: 14px; border-radius: 16px; cursor: pointer; font-weight: 700; margin-top: 15px; text-align: center; }
+        .add-trigger:hover { border-color: var(--accent); background: rgba(0, 242, 255, 0.05); }
+
+        /* --- MODAL --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #151921; border: 1px solid var(--border); width: 90%; max-width: 700px; border-radius: 24px; padding: 25px; position: relative; }
+        
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; margin-top: 20px; }
+        .catalog-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid transparent; }
+        .catalog-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .catalog-item img { width: 50px; height: 50px; margin-bottom: 8px; }
+
+        .type-selector { display: none; flex-direction: column; align-items: center; gap: 20px; padding: 20px 0; }
+        .type-options { display: flex; gap: 20px; }
+        .type-opt { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 20px; border-radius: 20px; cursor: pointer; width: 140px; text-align: center; }
+        .type-opt:hover { border-color: var(--accent); }
+
+        @media (max-width: 768px) { .trade-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">FNTD<span>VALUES</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Market</a></li>
+                <li class="dropdown">
+                    <div class="dropdown-trigger">Value List <small>▼</small></div>
+                    <div class="dropdown-menu">
+                        <a href="Cosmic.html">Cosmic</a>
+                        <a href="Nightmare.html">Nightmare</a>
+                        <a href="Secret.html">Secret</a>
+                    </div>
+                </li>
+                <li><a href="ValueCalculator.html">Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="calc-wrapper">
+        <div class="status-card">
+            <h1 id="trade-status">SELECT UNITS</h1>
+        </div>
+
+        <div class="trade-grid">
+            <div class="trade-box">
+                <h3>Your Offer</h3>
+                <div class="unit-slots" id="slots-left"></div>
+                <div class="total-row">Total Value: <span id="total-left">0</span></div>
+                <button class="add-trigger" onclick="openCatalog('left')">+ ADD UNIT</button>
+            </div>
+
+            <div class="trade-box">
+                <h3>Their Offer</h3>
+                <div class="unit-slots" id="slots-right"></div>
+                <div class="total-row">Total Value: <span id="total-right">0</span></div>
+                <button class="add-trigger" onclick="openCatalog('right')">+ ADD UNIT</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="catModal">
+        <div class="modal-content">
+            <div id="catalog-view">
+                <div class="cat-tabs">
+                    <div class="tab active" onclick="loadCat('cosmic')">COSMIC</div>
+                    <div class="tab" onclick="loadCat('nightmare')">NIGHTMARE</div>
+                    <div class="tab" onclick="loadCat('secret')">SECRET</div>
+                    <div class="tab" onclick="loadCat('items')">ITEMS</div>
+                    <div style="margin-left: auto; cursor:pointer; color: var(--loss);" onclick="closeCatalog()">✕</div>
+                </div>
+                <div class="catalog-grid" id="catGrid"></div>
+            </div>
+
+            <div id="type-view" class="type-selector">
+                <h2 id="sel-name" style="margin: 0 0 10px 0;">Unit Name</h2>
+                <div class="type-options">
+                    <div class="type-opt" onclick="confirmAdd(false)">
+                        <div style="font-size: 0.7rem; opacity: 0.6;">NORMAL</div>
+                        <span class="price-val" id="p-norm">0</span>
+                    </div>
+                    <div class="type-opt shiny-opt" onclick="confirmAdd(true)">
+                        <div style="font-size: 0.7rem; opacity: 0.6;">SHINY ✨</div>
+                        <span class="price-val" id="p-shiny">0</span>
+                    </div>
+                </div>
+                <button class="add-trigger" style="width: 100px; padding: 10px;" onclick="backToCatalog()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       const units = [
+  
+    { name: "Kaiken Mangle", val: 45000, sval: "O/C", cat: "cosmic", img: "https://i.ibb.co.com/hFGcKXVD/image-removebg-preview-8.png", demand: "8/10", stability: "stable" },
+    { name: "Eclipse Freddy", val: 16500, sval: "O/C", cat: "cosmic", img: "https://i.ibb.co.com/fzPb3kcz/Untitled-17.png", demand: "7/10", stability: "rising" },
+    { name: "Oblivian Saga", val: 55000, sval: "O/C", cat: "cosmic", img: "https://i.ibb.co.com/jvLjwfvr/07e5ca17-9868-43ca-916a-09f81ecb16e1.png", demand: "9/10", stability: "stable" },
+    { name: "Militia Warrior Bonnie", val: 13000, sval: "O/C", cat: "cosmic", img: "https://i.ibb.co.com/n8QkVMn3/image-removebg-preview-23.png", demand: "6/10", stability: "unstable" },
+
+    { name: "Tarnished Spring", val: 200, sval: 2000, cat: "secret", img: "https://i.ibb.co.com/Zp11WDNs/Tarnished-Spring-Bonnie.webp", demand: "10/10", stability: "stable" },
+    { name: "Withered Bonnie", val: 300, sval: 1100, cat: "secret", img: "https://i.ibb.co.com/ycFTH60W/Withered-Bonnie.webp", demand: "3/10", stability: "falling" },
+    { name: "Plane Boy", val: 600, sval: "O/C", cat: "secret", img: "https://i.ibb.co.com/QF02L6p8/Plane-Boy.webp", demand: "4/10", stability: "stable" },
+    { name: "Endo 02", val: 500, sval: 19000, cat: "secret", img: "https://i.ibb.co.com/Kjrqy6Zn/Endo-02.webp", demand: "6.5/10", stability: "rising" },
+    { name: "Patriot Freddy", val: 250, sval: 2300, cat: "secret", img: "https://i.ibb.co.com/8gqKzb9S/Patriot-Freddy.webp", demand: "6/10", stability: "stable" },
+    { name: "Abyssal Foxy", val: 200, sval: 1400, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-04232e93-55f9-4c56-8d96-c040dc802764.webp", demand: "8/10", stability: "stable" },
+    { name: "Rocketter Mangle", val: 1500, sval: "O/C", cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-65a70126-4154-4806-9a04-b99d28b0050e.webp", demand: "7/10", stability: "rising" },
+    { name: "Phantom Puppet", val: 2200, sval: 5600, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-e6efaeae-4f43-4c38-8e3e-275ae5722270.webp", demand: "7/10", stability: "stable" },
+    { name: "Gamer Girl Freddy", val: 100, sval: 500, cat: "secret", img: "https://i.ibb.co.com/GQ6GR59q/Untitled-21.png", demand: "9/10", stability: "stable" },
+    { name: "Golden Withered Freddy", val: 300, sval: 4500, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-7a6dd676-8790-4afb-81f3-9e345dee65bb.webp", demand: "9/10", stability: "unstable" },
+
+    
+   { name: "Shadow Bonnie", val: 1500, sval: 13500, cat: "nightmare", img: "https://i.ibb.co.com/k62gBwrV/Shadow-Bonnie.webp" },
+   { name: "Blighted Endo Freddy", val: 2000, sval: "O/C", cat: "nightmare", img: "https://image2url.com/r2/default/images/1773493952819-5a18b8ad-34ca-4688-a2c0-c3b9250aa081.webp" },
+   { name: "Valk Chica", val: 1000, sval: "O/C", cat: "nightmare", img: "https://image2url.com/r2/default/images/1773487991836-ad7e9242-992f-4ce9-a346-45fd96911815.webp" },
+   { name: "Phantom Mangle", val: 2000, sval: "O/C", cat: "nightmare", img: "https://image2url.com/r2/default/images/1773493923275-22c8f39b-3490-4018-b663-f2b27a99e842.webp" },
+   { name: "Marionette's Puppeteer", val: 900, sval: 2300, cat: "nightmare", img: "https://i.ibb.co.com/0ygp2zMN/Marionette-s-Puppeteer.webp" },
+   { name: "Leviathan Mangle", val: 1600, sval: "O/C", cat: "nightmare", img: "https://image2url.com/r2/default/images/1773509680911-82fd61e9-27b8-4fff-a38e-e7c67eca6479.webp" },
+   { name: "Bounded Shadow", val: 1500, sval: 3000, cat: "nightmare", img: "https://i.ibb.co.com/RpbYxphd/Bounded-Shadow.webp" },
+   { name: "Noah Boi", val: 150, sval: 1300, cat: "nightmare", img: "https://i.ibb.co.com/Kc1XrXbt/image-removebg-preview-12.png" },
+   { name: "Dark Poseidon Foxy", val: 760, sval: 4300, cat: "nightmare", img: "https://i.ibb.co.com/JwBwZ25z/image-removebg-preview-2.png" },
+   { name: "Cupcake Cone", val: 500, sval: "O/C", cat: "nightmare", img: "https://i.ibb.co.com/6cCcYTFQ/Screenshot-2026-02-25-223659.png" },
+   { name: "Springtrap", val: "O/C", sval: "O/C", cat: "nightmare", img: "https://i.ibb.co.com/pvh1s71M/Springtrap.webp" },
+   { name: "Scrap Bomber Puppet", val: 100, sval: 450, cat: "nightmare", img: "https://i.ibb.co.com/WNDjMfcT/image-removebg-preview-21.png" },
+   { name: "Shadow Chica", val: 2000, sval: "O/C", cat: "nightmare", img: "https://i.ibb.co.com/tPkJMZtq/download-2.png" },
+   { name: "Clover Hosted Bonnie", val: 4000, sval: "O/C", cat: "nightmare", img: "https://i.ibb.co.com/BHbY713V/aa810e0c-a1b7-42de-aeed-f86e027e01ee-removebg-preview.png"},
+   { name: "Code Synced Chica", val: 200, sval: 6500, cat: "nightmare", img: "https://i.ibb.co.com/Sw6jYwGh/Untitled-25.png" },
+   { name: "Death Bringer Freddy", val: 900, sval: 2000, cat: "nightmare", img: "https://i.ibb.co.com/ZpkJXPw8/Untitled-18.png" },
+    
+    { name: "Rockin Bonnie", val: 500, sval: "O/C", cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-13466f8c-dc64-463f-a30c-5c7ef5ae6551.webp", demand: "3/10", stability: "stable" },
+    { name: "Seven Seas Foxy", val: 600, sval: 3500, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-469de9c9-2f27-49c3-9cbd-53586e964e10.webp", demand: "6/10", stability: "rising" },
+    { name: "Safety Bonnie", val: 50, sval: 500, cat: "secret", img: "https://i.ibb.co.com/Y4XqHSQR/image-removebg-preview-10.png", demand: "5/10", stability: "stable" },
+    { name: "Algae Fredbear", val: 700, sval: "O/C", cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-2ac79a53-a491-46d0-9d18-1ee51fd93e03.webp", demand: "7/10", stability: "stable" },
+    { name: "Witch Toy Chica", val: 200, sval: 2200, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-e3adb43c-9dda-40ad-b2c4-7d37a78a1f28.webp", demand: "8/10", stability: "stable" },
+    { name: "Phantom Cupcake", val: 500, sval: 3000, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-ef05cff7-152d-499d-be39-6ffc7e8305eb.webp", demand: "4/10", stability: "falling" },
+    { name: "Cupcake Tank", val: 120, sval: 1500, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-0ce149e4-d528-42fb-8a37-0eca72cfdd50.webp", demand: "6/10", stability: "stable" },
+    { name: "Sentinel Bonnie", val: 100, sval: 2000, cat: "secret", img: "https://i.ibb.co.com/fdNmwtqS/Sentinel-Bonnie.webp", demand: "7/10", stability: "rising" },
+    { name: "Rad Freddy", val: 200, sval: 3500, cat: "secret", img: "https://i.ibb.co.com/20nxCzHQ/Rad-Freddy.webp", demand: "4/10", stability: "stable" },
+    { name: "Commando Endo", val: 200, sval: 4000, cat: "secret", img: "https://i.ibb.co.com/yBWr4ZwS/Commando-Endo.webp", demand: "5/10", stability: "stable" },
+    { name: "War Machine Foxy", val: 900, sval: "O/C", cat: "secret", img: "https://i.ibb.co.com/mFHwwnxc/War-Machine-Foxy.webp", demand: "9/10", stability: "stable" },
+    { name: "Phantom Balloon Boy", val: 1500, sval: 4000, cat: "secret", img: "https://i.ibb.co.com/4Z03zg36/Phantom-Balloon-Boy.webp   ", demand: "High", stability: "stable" },
+    { name: "Leprechaun Freddy", val: 200, sval: 3000, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-2d577d6c-8200-4df4-915a-291410b08cfc.png", demand: "High", stability: "stable" },
+    { name: "Sweetheart Toy Chica", val: 50, sval: 7000, cat: "secret", img: "https://cdn.phototourl.com/uploads/2026-03-19-45f2af0e-626f-4621-8106-f60da5e3ba12.png", demand: "High", stability: "stable" },
+    { name: "Pierced Foxy", val: 100, sval: 1500, cat: "secret", img: "https://i.ibb.co.com/yFHfxBFS/image-removebg-preview-7.png", demand: "High", stability: "stable" },
+    { name: "Pirate Withered Foxy", val: 200, sval: 3000, cat: "secret", img: "https://i.ibb.co.com/zWv1ByPP/Pirate-Withered-Foxy.webp", demand: "4/10", stability: "stable" },
+    { name: "Spring Bonnie", val: 300, sval: 9000, cat: "secret", img: "https://i.ibb.co.com/20nhHnYV/Spring-Bonnie.webp", demand: "4/10", stability: "stable" },
+    { name: "Sand Boy", val: 300, sval: 3100, cat: "secret", img: "https://i.ibb.co.com/HTCwcNft/no-Filter.png", demand: "5.5/10", stability: "stable" },
+    { name: "Endo", val: 10, sval: 600, cat: "secret", img: "https://i.ibb.co.com/sJK4QtFN/Endo.webp", demand: "High", stability: "stable" },
+  
+
+   
+    { name: "Premium Pass", val: 1000, cat: "items", img: "https://cdn.phototourl.com/uploads/2026-03-19-f66b8559-00db-4c02-b8fd-eca2a8e3661d.webp", demand: "10/10", stability: "stable" },
+    { name: "VIP", val: 1000, cat: "items", img: "https://cdn.phototourl.com/uploads/2026-03-19-92f6239f-be8f-4315-81b9-4cae3c1165e3.webp", demand: "9/10", stability: "stable" }
+];
+
+        let currentSide = 'left';
+        let trade = { left: [], right: [] };
+        let activeUnit = null;
+
+        // Вспомогательные функции для O/C
+        function formatPrice(p) {
+            if (p === "O/C") return "O/C";
+            return p.toLocaleString();
+        }
+
+        function priceToMath(p) {
+            if (p === "O/C") return 999999999; // Число для логики сравнения
+            return parseFloat(p) || 0;
+        }
+
+        function openCatalog(side) {
+            currentSide = side;
+            document.getElementById('catModal').style.display = 'flex';
+            backToCatalog();
+            loadCat('cosmic');
+        }
+
+        function closeCatalog() { document.getElementById('catModal').style.display = 'none'; }
+
+        function loadCat(cat) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.toggle('active', t.innerText.toLowerCase() === cat));
+            
+            const grid = document.getElementById('catGrid');
+            const filtered = units.filter(u => u.cat === cat);
+            
+            grid.innerHTML = filtered.map(u => `
+                <div class="catalog-item" onclick="startAddProcess('${u.name}')">
+                    <img src="${u.img}">
+                    <span class="item-name">${u.name}</span>
+                    <span class="item-price ${u.val === 'O/C' ? 'oc-text' : ''}">${formatPrice(u.val)}</span>
+                </div>
+            `).join('');
+        }
+
+        function startAddProcess(name) {
+            activeUnit = units.find(u => u.name === name);
+            if (activeUnit.cat === 'items') { confirmAdd(false); return; }
+            
+            document.getElementById('catalog-view').style.display = 'none';
+            document.getElementById('type-view').style.display = 'flex';
+            document.getElementById('sel-name').innerText = activeUnit.name;
+            
+            const pNorm = document.getElementById('p-norm');
+            const pShiny = document.getElementById('p-shiny');
+            
+            pNorm.innerText = formatPrice(activeUnit.val);
+            pShiny.innerText = formatPrice(activeUnit.sval);
+            
+            pNorm.className = activeUnit.val === "O/C" ? "price-val oc-text" : "price-val";
+            pShiny.className = activeUnit.sval === "O/C" ? "price-val oc-text" : "price-val";
+        }
+
+        function confirmAdd(isShiny) {
+            const price = isShiny ? activeUnit.sval : activeUnit.val;
+            const displayName = isShiny ? activeUnit.name + " ✨" : activeUnit.name;
+            
+            trade[currentSide].push({
+                ...activeUnit,
+                displayName: displayName,
+                displayVal: price,
+                isShiny: isShiny,
+                iid: Date.now() + Math.random()
+            });
+            
+            closeCatalog();
+            updateUI();
+        }
+
+        function backToCatalog() {
+            document.getElementById('catalog-view').style.display = 'block';
+            document.getElementById('type-view').style.display = 'none';
+        }
+
+        function removeUnit(side, iid) {
+            trade[side] = trade[side].filter(u => u.iid !== iid);
+            updateUI();
+        }
+
+        function updateUI() {
+            ['left', 'right'].forEach(side => {
+                const container = document.getElementById(`slots-${side}`);
+                const totalText = document.getElementById(`total-${side}`);
+                
+                let hasOC = false;
+                let sum = 0;
+
+                trade[side].forEach(u => {
+                    if (u.displayVal === "O/C") hasOC = true;
+                    else sum += u.displayVal;
+                });
+
+                totalText.innerText = hasOC ? "O/C" : sum.toLocaleString();
+                totalText.className = hasOC ? "oc-text" : "";
+
+                container.innerHTML = trade[side].map(u => `
+                    <div class="added-unit ${u.isShiny ? 'is-shiny' : ''}" style="border-left: 4px solid var(--${u.cat})">
+                        <img src="${u.img}">
+                        <div class="info">
+                            <div class="name">${u.displayName}</div>
+                            <div class="price ${u.displayVal === 'O/C' ? 'oc-text' : ''}">${formatPrice(u.displayVal)}</div>
+                        </div>
+                        <div class="remove-btn" onclick="removeUnit('${side}', ${u.iid})">✕</div>
+                    </div>
+                `).join('');
+            });
+
+            // Logic Win/Loss
+            const valL = trade.left.reduce((acc, u) => acc + priceToMath(u.displayVal), 0);
+            const valR = trade.right.reduce((acc, u) => acc + priceToMath(u.displayVal), 0);
+            const status = document.getElementById('trade-status');
+
+            if (valL === 0 && valR === 0) {
+                status.innerText = "SELECT UNITS";
+                status.style.color = "var(--text-dim)";
+            } else {
+                const ratio = valR / (valL || 1);
+                if (ratio >= 0.9 && ratio <= 1.1) { status.innerText = "FAIR TRADE"; status.style.color = "#fff"; }
+                else if (ratio > 1.1) { status.innerText = "BIG WIN"; status.style.color = "var(--win)"; }
+                else { status.innerText = "BIG LOSS"; status.style.color = "var(--loss)"; }
+            }
+        }
+    </script>
+</body>
+</html>

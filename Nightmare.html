@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nightmare | FNTD Values</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05040a;
+            --card-bg: rgba(15, 10, 25, 0.4);
+            --border: rgba(189, 0, 255, 0.15);
+            --nightmare: #bd00ff;
+            --shiny: #ff00cc;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --stable: #00ff88;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% -20%, rgba(189, 0, 255, 0.2) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding-bottom: 100px;
+        }
+
+        /* --- Animations --- */
+        @keyframes shinyPulse {
+            0% { box-shadow: 0 0 5px rgba(255, 0, 204, 0.2); border-color: rgba(255, 0, 204, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 0, 204, 0.5); border-color: rgba(255, 0, 204, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(255, 0, 204, 0.2); border-color: rgba(255, 0, 204, 0.3); }
+        }
+
+        @keyframes neonText {
+            0% { text-shadow: 0 0 5px #ff00cc, 0 0 10px #ff00cc; }
+            50% { text-shadow: 0 0 10px #ff00cc, 0 0 20px #ff00cc, 0 0 30px #ff00cc; }
+            100% { text-shadow: 0 0 5px #ff00cc, 0 0 10px #ff00cc; }
+        }
+
+        /* --- NAVIGATION --- */
+        .main-nav {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            display: flex; align-items: center; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px); background: rgba(5, 4, 10, 0.8);
+        }
+        .nav-container { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; }
+        .logo { font-weight: 800; font-size: 1.1rem; text-decoration: none; color: #fff; text-transform: uppercase; }
+        .logo span { color: var(--nightmare); }
+        
+        .nav-links { display: flex; gap: 25px; list-style: none; margin: 0; padding: 0; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-dim); font-weight: 600; font-size: 0.85rem; transition: 0.3s; }
+        .nav-links a:hover { color: #fff; }
+
+        .dropdown { position: relative; padding: 10px 0; }
+        .dropdown-trigger { color: var(--text-dim); font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+        .dropdown-menu {
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+            background: #0f0a19; border: 1px solid var(--border); border-radius: 12px; padding: 8px; min-width: 160px;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 10px; font-size: 0.8rem; border-radius: 8px; }
+        .dropdown-menu a:hover { background: rgba(189, 0, 255, 0.1); color: var(--nightmare); }
+
+        /* --- CONTENT --- */
+        .page-header { text-align: center; padding: 140px 20px 60px; }
+        .page-header h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800; margin: 0; letter-spacing: -3px;
+            background: linear-gradient(180deg, #fff 30%, #bd00ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(189, 0, 255, 0.4));
+        }
+
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px; width: 95%; max-width: 1400px; margin: 0 auto;
+        }
+
+        .unit-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px 8px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            display: flex; flex-direction: column;
+            backdrop-filter: blur(10px);
+            min-height: 520px;
+            position: relative;
+        }
+        .unit-card:hover { transform: translateY(-10px); border-color: var(--nightmare); }
+
+        .shiny-tabs {
+            display: flex; background: rgba(0,0,0,0.5);
+            border-radius: 50px; padding: 4px; margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative; z-index: 2;
+        }
+        .tab-btn {
+            flex: 1; border: none; background: transparent; color: var(--text-dim);
+            padding: 8px; font-weight: 800; font-size: 0.65rem; cursor: pointer;
+            text-transform: uppercase; border-radius: 50px; transition: 0.3s;
+        }
+        .tab-btn.active { background: #fff; color: #000; }
+        
+        .unit-card.is-shiny { animation: shinyPulse 3s infinite ease-in-out; background: rgba(40, 0, 50, 0.4); }
+        .unit-card.is-shiny .tab-btn.active { background: var(--shiny); color: #fff; }
+
+        .image-container { height: 160px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .unit-img { max-height: 100%; transition: 0.6s; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+        
+        .unit-card.is-shiny .unit-img { filter: drop-shadow(0 0 15px var(--shiny)); transform: scale(1.05); }
+
+        .unit-name { font-size: 1.1rem; font-weight: 800; text-align: center; margin-bottom: 15px; color: #fff; min-height: 2.5rem; display: flex; align-items: center; justify-content: center; }
+
+        .stats-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; border: 1px solid rgba(255,255,255,0.02); }
+        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .stat-row:last-child { border-bottom: none; }
+        .label { font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+        .val { font-weight: 700; font-size: 0.85rem; }
+        .val.price { color: var(--nightmare); font-size: 1rem; }
+        
+        .unit-card.is-shiny .val.price { color: #fff; animation: neonText 1.5s infinite ease-in-out; }
+
+        /* Логика переключения */
+        .content-shiny { display: none; }
+        .unit-card.is-shiny .content-normal { display: none; }
+        .unit-card.is-shiny .content-shiny { display: block; }
+
+        @media (max-width: 1200px) { .units-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) { .units-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .units-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">FNTD<span>VALUES</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Market</a></li>
+                <li class="dropdown">
+                    <div class="dropdown-trigger">Value List ▼</div>
+                    <div class="dropdown-menu">
+                        <a href="Cosmic.html">Cosmic</a>
+                        <a href="Nightmare.html">Nightmare</a>
+                      
+                    </div>
+                </li>
+                <li><a href="ValueCalculator.html">Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+    <header class="page-header">
+        <h1>NIGHTMARE</h1>
+    </header>
+
+    <main class="units-grid">
+
+        <div class="unit-card" id="u1">
+            <div class="shiny-tabs">
+                <button class="tab-btn active" onclick="toggleShiny('u1', false)">Normal</button>
+                <button class="tab-btn" onclick="toggleShiny('u1', true)">Shiny ✨</button>
+            </div>
+            <div class="image-container"><img src="https://i.ibb.co.com/k62gBwrV/Shadow-Bonnie.webp" class="unit-img"></div>
+            <span class="unit-name">Shadow Bonnie</span>
+            <div class="stats-box content-normal">
+                <div class="stat-row"><span class="label">Value</span><span class="val price">1k</span></div>
+                <div class="stat-row"><span class="label">Demand</span><span class="val">5/10</span></div>
+                <div class="stat-row"><span class="label">Stability</span><span class="val" style="color:  #777978;">Stable</span></div>
+            </div>
+            <div class="stats-box content-shiny">
+                <div class="stat-row"><span class="label">Value</span><span class="val price">5K-10K</span></div>
+                <div class="stat-row"><span class="label">Demand</span><span class="val">10/10</span></div>
+                <div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div>
+            </div>
+        </div>
+
+        <div class="unit-card" id="u2">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u2', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u2', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://image2url.com/r2/default/images/1773487991836-ad7e9242-992f-4ce9-a346-45fd96911815.webp" class="unit-img"></div>
+            <span class="unit-name">Valkyrie Chica</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">1.5K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ff0000;">Slowly Dropping</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">O/C</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">Extreme</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978; ">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u3">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u3', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u3', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://image2url.com/r2/default/images/1773493952819-5a18b8ad-34ca-4688-a2c0-c3b9250aa081.webp" class="unit-img"></div>
+            <span class="unit-name">Blighted Endo Freddy</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">2k</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">6.5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">O/C</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">10/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u4">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u4', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u4', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://image2url.com/r2/default/images/1773493923275-22c8f39b-3490-4018-b663-f2b27a99e842.webp" class="unit-img"></div>
+            <span class="unit-name">Phantom Mangle</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">2k</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">6.5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #eeff00;">Unstable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">O/C</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">10/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #00ff88;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u5">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u5', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u5', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/0ygp2zMN/Marionette-s-Puppeteer.webp" class="unit-img"></div>
+            <span class="unit-name">Marionette's Puppeteer</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">1K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">6/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #868686;">Stable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">9K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">8/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #e5ff00;">Unstable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u6">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u6', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u6', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://image2url.com/r2/default/images/1773509680911-82fd61e9-27b8-4fff-a38e-e7c67eca6479.webp" class="unit-img"></div>
+            <span class="unit-name">Leviathan Mangle</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">2k</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">6/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #eeff00;">Unstable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">O/C</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">9/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u7">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u7', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u7', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/RpbYxphd/Bounded-Shadow.webp" class="unit-img"></div>
+            <span class="unit-name">Bounded Shadow</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">2K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">7/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #eeff00;">Unstable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">5K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">7.5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u8">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u8', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u8', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/Kc1XrXbt/image-removebg-preview-12.png" class="unit-img"></div>
+            <span class="unit-name">Noah Boi</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">100</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">2/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">700</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">4/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u9">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u9', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u9', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/JwBwZ25z/image-removebg-preview-2.png" class="unit-img"></div>
+            <span class="unit-name">Dark Poseidon Foxy</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">500</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #eeff00;">Unstable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">3K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">6/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u10">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u10', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u10', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/6cCcYTFQ/Screenshot-2026-02-25-223659.png" class="unit-img"></div>
+            <span class="unit-name">Cupcake Cone</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">1.5K+</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">7/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">O/C</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">O/C</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u11">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u11', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u11', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/pvh1s71M/Springtrap.webp" class="unit-img"></div>
+            <span class="unit-name">Springtrap</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">???</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">???</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ffffff;">???</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">???</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">???</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ffffff;">???</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u12">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u12', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u12', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/WNDjMfcT/image-removebg-preview-21.png" class="unit-img"></div>
+            <span class="unit-name">Scrap  Bomber Puppet</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">100</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">3/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ff0000;">Dropping</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">500</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">4/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ff0000;">Dropping</span></div></div>
+        </div>
+
+        
+        <div class="unit-card" id="u13">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u13', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u13', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/tPkJMZtq/download-2.png" class="unit-img"></div>
+            <span class="unit-name">Shadow Chica</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">1k</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">High</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #eeff00;">Unstable</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">6k</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">Extreme</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        
+        <div class="unit-card" id="u14">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u14', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u14', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/ZpkJXPw8/Untitled-18.png" class="unit-img"></div>
+            <span class="unit-name">Death Bringer Freddy</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">900</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ff0000;">Dropping</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">2K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">7/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+        <div class="unit-card" id="u15">
+            <div class="shiny-tabs"><button class="tab-btn active" onclick="toggleShiny('u15', false)">Normal</button><button class="tab-btn" onclick="toggleShiny('u15', true)">Shiny ✨</button></div>
+            <div class="image-container"><img src="https://i.ibb.co.com/Sw6jYwGh/Untitled-25.png" class="unit-img"></div>
+            <span class="unit-name">Code Synced Chica</span>
+            <div class="stats-box content-normal"><div class="stat-row"><span class="label">Value</span><span class="val price">100</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">5/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #ff0000;">Dropping</span></div></div>
+            <div class="stats-box content-shiny"><div class="stat-row"><span class="label">Value</span><span class="val price">5K</span></div><div class="stat-row"><span class="label">Demand</span><span class="val">7/10</span></div><div class="stat-row"><span class="label">Stability</span><span class="val" style="color: #777978;">Stable</span></div></div>
+        </div>
+
+    </main>
+
+    <script>
+        function toggleShiny(id, isShiny) {
+            const el = document.getElementById(id);
+            const btns = el.querySelectorAll('.tab-btn');
+            if(isShiny) {
+                el.classList.add('is-shiny');
+                btns[0].classList.remove('active'); btns[1].classList.add('active');
+            } else {
+                el.classList.remove('is-shiny');
+                btns[0].classList.add('active'); btns[1].classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
+
